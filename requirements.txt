@@ -1,0 +1,7 @@
+djangorestframework==3.9.4
+djangorestframework-jwt==1.11.0
+django-phonenumber-field==2.4.0
+psycopg2-binary==2.8.2
+phonenumbers==8.10.12
+
+
