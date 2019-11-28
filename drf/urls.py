@@ -25,6 +25,8 @@ urlpatterns = [
     path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('register/',views.RegistratonView.as_view()),
     path('hello/',views.HelloView.as_view()),
+    path('email/',views.MailSend.as_view()),
+
 
 
 ]

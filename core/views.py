@@ -7,16 +7,24 @@ from rest_framework import generics
 
 from core import models as core_model
 from core import serializers as serializer
+#Email Send
+from django.core.mail import send_mail
+from django.conf import settings
 
 
-# Create your views here.
-
+#For Registration 
 class RegistratonView(APIView):
 	serializer_class = serializer.UserSerializer
 	permission_classes = (AllowAny,)
 	def post(self,request):
+		subject = 'Django Email Subject' #email sending
+		message = 'Thank you for register'
+		email_from = settings.EMAIL_HOST_USER
 		serializer = self.serializer_class(data=request.data)
+		user = request.data.get('email')
 		serializer.is_valid(raise_exception=True)
+		recipient_list = [user,]
+		send_mail( subject, message, email_from, recipient_list )
 		response = serializer.save()
 		return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -27,4 +35,14 @@ class HelloView(APIView):
     def get(self, request):
         content = {'message': 'Hello, World!'}
         return Response(content)
+
+class MailSend(APIView): 
+	pass       
+	# permission_classes = (AllowAny,)
+	# def post(self,request):
+	# 	subject = 'Django Email Subject' #email sending
+	# 	message = 'Thank you for register'
+	# 	recipient_list = ['gurjarraviiet2k13@gmail.com',]
+	# 	email_from = settings.EMAIL_HOST_USER
+	# 	send_mail( subject, message, email_from, recipient_list )
 
