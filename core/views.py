@@ -14,19 +14,23 @@ from django.conf import settings
 
 #For Registration 
 class RegistratonView(APIView):
-	serializer_class = serializer.UserSerializer
-	permission_classes = (AllowAny,)
-	def post(self,request):
-		subject = 'Django Email Subject' #email sending
-		message = 'Thank you for register'
-		email_from = settings.EMAIL_HOST_USER
-		serializer = self.serializer_class(data=request.data)
-		user = request.data.get('email')
-		serializer.is_valid(raise_exception=True)
-		recipient_list = [user,]
-		send_mail( subject, message, email_from, recipient_list )
-		response = serializer.save()
-		return Response(serializer.data, status=status.HTTP_201_CREATED)
+    serializer_class = serializer.UserSerializer
+    permission_classes = (AllowAny,)
+
+    def post(self,request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        response = serializer.save()
+        code = str(response.verification_code)
+
+        __doc__="""Email verification"""
+        subject = 'Django Email Subject' 
+        message = code 
+        email_from = settings.EMAIL_HOST_USER
+        user = request.data.get('email')
+        recipient_list = [user,]
+        send_mail( subject, message, email_from, recipient_list )
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class HelloView(APIView):
@@ -37,12 +41,26 @@ class HelloView(APIView):
         return Response(content)
 
 class MailSend(APIView): 
-	pass       
-	# permission_classes = (AllowAny,)
-	# def post(self,request):
-	# 	subject = 'Django Email Subject' #email sending
-	# 	message = 'Thank you for register'
-	# 	recipient_list = ['gurjarraviiet2k13@gmail.com',]
-	# 	email_from = settings.EMAIL_HOST_USER
-	# 	send_mail( subject, message, email_from, recipient_list )
+    pass       
+    # permission_classes = (AllowAny,)
+    # def post(self,request):
+    #   subject = 'Django Email Subject' #email sending
+    #   message = 'Thank you for register'
+    #   recipient_list = ['gurjarraviiet2k13@gmail.com',]
+    #   email_from = settings.EMAIL_HOST_USER
+    #   send_mail( subject, message, email_from, recipient_list )
 
+
+class MailVerificationView(APIView):
+    serializer_class = serializer.VerificationSeialiser
+    permission_classes = (AllowAny,)
+
+    def get(self,request):
+        serializer = self.serializer_class(data=request.GET)
+        serializer.is_valid(raise_exception=True)
+        obj = serializer.get(request)
+        return Response(obj)
+
+
+
+    

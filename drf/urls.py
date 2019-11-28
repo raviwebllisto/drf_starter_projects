@@ -16,7 +16,6 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from core import views
-
 from rest_framework_simplejwt import views as jwt_views
 
 
@@ -25,7 +24,9 @@ urlpatterns = [
     path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('register/',views.RegistratonView.as_view()),
     path('hello/',views.HelloView.as_view()),
-    path('email/',views.MailSend.as_view()),
+    path('active/',views.MailVerificationView.as_view()),
+
+
 
 
 

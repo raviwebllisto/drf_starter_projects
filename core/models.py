@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-
+import uuid
 from django.db import models
 from django.core.mail import send_mail
 from django.contrib.auth.models import PermissionsMixin
@@ -44,10 +44,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
     # date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
-    is_active = models.BooleanField(_('active'), default=True)
+    is_active = models.BooleanField(_('active'), default=False)
     is_staff = models.BooleanField(default=False)
     # avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     phone = PhoneNumberField(null=True, blank=True)
+    verification_code = models.UUIDField(default=uuid.uuid4, editable=False)
 
     objects = UserManager()
 
@@ -76,3 +77,5 @@ class User(AbstractBaseUser, PermissionsMixin):
         Sends an email to this User.
         '''
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
+
