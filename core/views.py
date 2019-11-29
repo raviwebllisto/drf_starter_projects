@@ -22,10 +22,10 @@ class RegistratonView(APIView):
         serializer.is_valid(raise_exception=True)
         response = serializer.save()
         code = str(response.verification_code)
-
-        __doc__="""Email verification"""
-        subject = 'Django Email Subject' 
-        message = code 
+        #Email Verification
+        subject = 'Django Email Subject'
+        message = 'http://localhost:8000/active/?active_code={}'.format(code)
+        # message = code
         email_from = settings.EMAIL_HOST_USER
         user = request.data.get('email')
         recipient_list = [user,]

@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'rest_framework',
+    'django_cron',
+
 ]
 
 MIDDLEWARE = [
@@ -162,3 +164,8 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
 
+SITE_URL = os.environ.get('REGISTER_URL')
+
+CRON_CLASSES = [
+    "core.cron.MyCronJob",
+]
