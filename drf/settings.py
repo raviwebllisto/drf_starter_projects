@@ -166,6 +166,16 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
 
 SITE_URL = os.environ.get('REGISTER_URL')
 
+#Cron 
 CRON_CLASSES = [
     "core.cron.MyCronJob",
 ]
+
+# Twilio configurations
+# ------------------------------------------------------------------------------
+TWILIO_ACOUNT_SID = os.environ.get('TWILIO_ACOUNT_SID')
+TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN')
+
+
+# CORS_ORIGIN_ALLOW_ALL = True
+# TWILIO_PHONE = '+917777881377'

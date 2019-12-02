@@ -25,9 +25,10 @@ urlpatterns = [
     path('register/',views.RegistratonView.as_view()),
     path('hello/',views.HelloView.as_view()),
     path('active/',views.MailVerificationView.as_view()),
-
-
-
+    path('send-otp/',views.SendUserOTPAPIView.as_view()),
+    path('verify-otp/',views.OTPVerificationView.as_view()),
+    path('send_request/',views.SendRequestView.as_view()),
+    path('accept_request/',views.AcceptRequestView.as_view()),
 
 
 ]

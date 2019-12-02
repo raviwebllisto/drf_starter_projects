@@ -6,9 +6,10 @@ from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.utils.translation import ugettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
-
-
+from django_common.db_fields import JSONField
 from django.contrib.auth.base_user import BaseUserManager
+
+
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -77,3 +78,51 @@ class User(AbstractBaseUser, PermissionsMixin):
         Sends an email to this User.
         '''
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
+
+class OTPVerification(models.Model):
+    """
+    OTP - One time password
+    """
+    phone = PhoneNumberField(unique=True)
+    code = models.CharField(max_length=8)
+
+
+# class TimeStampModel(models.Model):
+#     created = models.DateTimeField(auto_now_add=True)
+#     updated = models.DateTimeField(auto_now=True)
+
+#     class Meta:
+#         abstract = True
+
+
+class PersonalChat(models.Model):
+    chat_id = models.CharField(max_length=100, unique=True)
+    conversation = JSONField(null=True, blank=True)
+
+
+class Friend(models.Model):
+    STATUS = (("REQUESTED","requested"),
+              ("REJECTED","rejected"),
+              ('ACCEPTED','accepted'),
+              ('UNFRIEND','unfriend')
+            )
+
+    from_user = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="requset_from_user")
+
+    to_user = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="request_to_user")
+    chat = models.ForeignKey(
+        PersonalChat,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="persnal_chat")
+    status = models.CharField(max_length=50,choices=STATUS,default='requested')
