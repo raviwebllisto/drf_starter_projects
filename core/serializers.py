@@ -30,7 +30,7 @@ class VerificationSeialiser(serializers.Serializer):
 	def get(self,request):
 		code = request.GET.get('active_code')
 		try: 
-			user =  User.objects.get(verification_code=code)
+			user =  core_model.User.objects.get(verification_code=code)
 		except:
 			user = False
 
@@ -54,14 +54,12 @@ class OTPVerifySeialiser(serializers.Serializer):
 
 	def get(self,request):
 		code = request.GET.get('otp_code')
-		try: 
-			user =  OTPVerification.objects.get(code=code)
+		try:
+			user =  core_model.OTPVerification.objects.get(code=code)
 		except:
 			user = False
 
-		if user:
-			# user.is_active = True
-		
+		if user:		
 			data = {"status": True, "message": "Code Verified"}
 		else:
 			data = {"status": False, "message": "Invalide Code"}

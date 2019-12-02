@@ -63,7 +63,7 @@ class SendUserOTPAPIView(generics.CreateAPIView):
     def post(self, request, *args, **kwargs):
         account_sid = settings.TWILIO_ACOUNT_SID
         auth_token = settings.TWILIO_AUTH_TOKEN
-        otp = random.randint(10000,999999)
+        otp = random.randint(100,99999)
         client = Client(account_sid, auth_token)
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
