@@ -7,13 +7,22 @@ from rest_framework import generics
 from core import utils
 import pyotp
 import random
+import time
 from core import models as core_model
 from core import serializers as serializer
 #Email Send
 from django.core.mail import send_mail
 from django.conf import settings
-
+#send otp using twilio
 from twilio.rest import Client
+
+#chatapp
+from django.utils.safestring import mark_safe
+import json
+#decorators use
+from django.contrib.auth.decorators import login_required
+from decorators import timeit
+
 
 #For Registration 
 class RegistratonView(APIView):
@@ -35,11 +44,10 @@ class RegistratonView(APIView):
         send_mail( subject, message, email_from, recipient_list )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-
 class HelloView(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request):
+    permission_classes = (AllowAny,)
+    @timeit
+    def get(*args, **kwargs):
         content = {'message': 'Hello, World!'}
         return Response(content)
 
@@ -63,13 +71,13 @@ class SendUserOTPAPIView(generics.CreateAPIView):
     def post(self, request, *args, **kwargs):
         account_sid = settings.TWILIO_ACOUNT_SID
         auth_token = settings.TWILIO_AUTH_TOKEN
-        otp = random.randint(100,99999)
+        otp = random.randint(10,99999)
         client = Client(account_sid, auth_token)
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.data['phone']
-        to_send = [user,]
-        obj = core_model.OTPVerification.objects.create(phone=user, code=otp)
+        phone = serializer.data['phone']
+        to_send = [phone,]
+        obj = core_model.OTPVerification.objects.create(phone=phone, code=otp)
         message = client.messages\
         .create(
             body='Hello Ravindra OTP is {}'.format(otp),
@@ -92,7 +100,7 @@ class OTPVerificationView(APIView):
 
 class SendRequestView(APIView):
     serializer_class = serializer.SendRequestSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
     def post(self,request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -106,7 +114,7 @@ class SendRequestView(APIView):
 
 class AcceptRequestView(APIView):
     serializer_class = serializer.AcceptRequestSerializer
-    permission_classes =(AllowAny,)
+    permission_classes =(IsAuthenticated,)
 
     def post(self,request):
         serializer = self.serializer_class(data=request.data)
@@ -118,3 +126,22 @@ class AcceptRequestView(APIView):
         else:
             response_status = status.HTTP_404_NOT_FOUND
         return Response(response,status=response_status)
+
+
+def index(request):
+    return render(request, 'index.html', {})
+
+# def msg(request,room_name):
+#     serializer_class = serializer.MsgSerializer
+#     permission_classes = (AllowAny,)
+#     serializer = self.serializer_class(data=request.data)
+#     serializer.is_valid(raise_exception=True)
+#     serializer.save()
+#     return render(request,'room.html',{
+#         'room_name_json':mark_safe(json.dumps(serializer))
+#         })
+
+def room(request, room_name):
+    return render(request, 'room.html', {
+        'room_name_json': mark_safe(json.dumps(room_name))
+    })

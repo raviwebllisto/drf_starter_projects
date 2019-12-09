@@ -126,3 +126,7 @@ class Friend(models.Model):
         blank=True,
         related_name="persnal_chat")
     status = models.CharField(max_length=50,choices=STATUS,default='requested')
+
+
+class MsgModel(models.Model):
+    message = models.CharField(max_length=100,null=True,blank=True)

@@ -5,3 +5,4 @@ from .models import *
 admin.site.register(User)
 admin.site.register(OTPVerification)
 admin.site.register(Friend)
+admin.site.register(PersonalChat)

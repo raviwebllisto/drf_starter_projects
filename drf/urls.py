@@ -17,9 +17,11 @@ from django.contrib import admin
 from django.urls import path
 from core import views
 from rest_framework_simplejwt import views as jwt_views
+from django.conf.urls import include
 
 
 urlpatterns = [
+    path('chat/', include('core.urls')),
     path('admin/', admin.site.urls),
     path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('register/',views.RegistratonView.as_view()),
@@ -29,6 +31,7 @@ urlpatterns = [
     path('verify-otp/',views.OTPVerificationView.as_view()),
     path('send_request/',views.SendRequestView.as_view()),
     path('accept_request/',views.AcceptRequestView.as_view()),
+
 
 
 ]

@@ -108,3 +108,17 @@ class AcceptRequestSerializer(serializers.Serializer):
 			data = {"status":True,"message":"Request Accepted !"}
 		else:
 			data = {"status":False,"message":"Request Not Found !"}
+
+# class SendMessageSerializer(serializers.Serializer):
+# 	message = serializers.CharField()
+# 	receiver_id = serializers.CharField()
+# 	channel_name = serializers.CharField()
+
+# 	def send(self,request):
+# 		
+class MsgSerializer(serializers.ModelSerializer):
+
+	class Meta:
+		model  = core_model.MsgModel
+		fields = '__all__'
+
