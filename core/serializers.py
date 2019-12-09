@@ -109,16 +109,20 @@ class AcceptRequestSerializer(serializers.Serializer):
 		else:
 			data = {"status":False,"message":"Request Not Found !"}
 
-# class SendMessageSerializer(serializers.Serializer):
-# 	message = serializers.CharField()
-# 	receiver_id = serializers.CharField()
-# 	channel_name = serializers.CharField()
 
-# 	def send(self,request):
-# 		
 class MsgSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model  = core_model.MsgModel
 		fields = '__all__'
 
+class EmployeeSerializer(serializers.ModelSerializer):
+	# def create(self, validated_data):
+	# 	emp = super(EmployeeSerializer, self).create(validated_data)
+	# 	emp.save()
+
+	# 	return emp
+
+	class Meta:
+		model = core_model.Employee
+		fields = '__all__'

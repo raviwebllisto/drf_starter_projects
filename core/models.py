@@ -130,3 +130,11 @@ class Friend(models.Model):
 
 class MsgModel(models.Model):
     message = models.CharField(max_length=100,null=True,blank=True)
+
+
+class Employee(models.Model):
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    compny_name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+    salary = models.FloatField()

@@ -31,6 +31,12 @@ urlpatterns = [
     path('verify-otp/',views.OTPVerificationView.as_view()),
     path('send_request/',views.SendRequestView.as_view()),
     path('accept_request/',views.AcceptRequestView.as_view()),
+    path('emp/',views.EmployeeView.as_view()),
+    path('emp/<int:pk>/', views.EmployeeView.as_view()),
+
+    path('emplist/',views.EmployeeList.as_view()),
+    path('empdetails/',views.EmployeeDetail.as_view()),
+
 
 
 

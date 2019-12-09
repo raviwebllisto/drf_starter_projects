@@ -127,21 +127,52 @@ class AcceptRequestView(APIView):
             response_status = status.HTTP_404_NOT_FOUND
         return Response(response,status=response_status)
 
-
+#chatapp
 def index(request):
     return render(request, 'index.html', {})
 
-# def msg(request,room_name):
-#     serializer_class = serializer.MsgSerializer
-#     permission_classes = (AllowAny,)
-#     serializer = self.serializer_class(data=request.data)
-#     serializer.is_valid(raise_exception=True)
-#     serializer.save()
-#     return render(request,'room.html',{
-#         'room_name_json':mark_safe(json.dumps(serializer))
-#         })
 
 def room(request, room_name):
     return render(request, 'room.html', {
         'room_name_json': mark_safe(json.dumps(room_name))
     })
+
+class EmployeeView(APIView):
+    serializer_class = serializer.EmployeeSerializer
+    permission_classes = (AllowAny,)
+
+    def post(self,request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        return Response(serializer.errors,status=status.HTTP_404_NOT_FOUND)
+
+    def get(self, request):
+        emp = core_model.Employee.objects.all()
+        serializer = self.serializer_class(emp,many=True)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        emp = core_model.Employee.objects.get(pk=pk)
+        serializer = self.serializer_class(emp,data=request.data,partial=True)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_404_NOT_FOUND)
+    
+    def delete(self,request,pk):
+        emp = core_model.Employee.objects.get(pk=pk)
+        emp.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class EmployeeList(generics.ListCreateAPIView):
+    permission_classes = (AllowAny,)
+    queryset = core_model.Employee.objects.all()
+    serializer_class = serializer.EmployeeSerializer
+
+class EmployeeDetail(generics.RetrieveDestroyAPIView):
+    permission_classes = (AllowAny,)
+    queryset = core_model.Employee.objects.all()
+    serializer_class = serializer.EmployeeSerializer

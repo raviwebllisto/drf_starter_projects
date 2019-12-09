@@ -187,16 +187,6 @@ TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN')
 
 # CORS_ORIGIN_ALLOW_ALL = True
 # TWILIO_PHONE = '+917777881377'
-# Channels
-ASGI_APPLICATION = 'routing.application'
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
-        },
-    },
-}
 
 #Use For celery
 ASGI_APPLICATION = 'routing.application'
