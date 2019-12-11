@@ -100,7 +100,7 @@ class SendUserOTPAPIView(generics.CreateAPIView):
             }
             logging.error(msg)
             logging.warning(msg)
-            loggig.info(msg)
+            logging.info(msg)
         return Response({'message': 'data'})
 
 
