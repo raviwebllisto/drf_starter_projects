@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_cron',
     'channels',
+    'djcelery_email',
 
 ]
 
@@ -165,7 +166,8 @@ LOGOUT_REDIRECT_URL = '/'
 #Email sending
 import smtplib
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
@@ -203,3 +205,82 @@ BROKER_URL = 'redis://localhost:6379/0'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+
+#Logger
+from .filter import *
+
+LOGGING = {
+   'version': 1,
+   'disable_existing_loggers': False,
+   'formatters': {
+       'console': {
+           'format': '%(name)-12s %(levelname)-8s %(message)s'
+       },
+       'file': {
+           'format': '%(name)-12s %(levelname)-8s %(message)s'
+       }
+   },
+   'filters': {
+       'special': {
+           '()': 'drf.filter.SpecialFilter',
+       },
+       'errorfilter': {
+            '()': 'drf.filter.ErrorFilter',
+       },
+       'warnfilter': {
+            '()': 'drf.filter.WarningFilter',
+       },
+       'infofilter': {
+            '()': 'drf.filter.InfoFilter',
+       },
+       'require_debug_true': {
+           '()': 'django.utils.log.RequireDebugTrue',
+       },
+   },
+   'handlers': {
+       'console': {
+           'class': 'logging.StreamHandler',
+           'formatter': 'console'
+       },
+       'file': {
+           'level': 'DEBUG',
+           'class': 'logging.FileHandler',
+           'formatter': 'file',
+           'filename': os.path.join(BASE_DIR, 'debug.log'),
+           'filters': ['special',],
+       },
+      'warn_logs': {
+         'level': 'WARNING',
+         'class': 'logging.FileHandler',
+         'formatter':'file',
+         'filename': os.path.join(BASE_DIR,'warning.log'),
+         'filters': ['warnfilter',]
+       },
+       'error_log': {
+           'level': 'ERROR',
+           'class': 'logging.FileHandler',
+           'formatter': 'file',
+           'filename': os.path.join(BASE_DIR, 'error.log'),
+           'filters': ['errorfilter',],
+       },
+       'info_logs': {
+          'level':'INFO',
+          'class': 'logging.FileHandler',
+          'formatter': 'file',
+          'filename' : os.path.join(BASE_DIR,'info.log'),
+          'filters':['infofilter']
+       },
+      
+   },
+   'loggers': {
+       '': {
+           'level': 'ERROR',
+           'handlers': ['file','error_log','warn_logs','info_logs',],
+            'propagate': True,
+       },
+       # 'django.request': {
+       #     'level':'ERROR',
+       #     'handlers':['error_log']
+       # }
+   }
+}

@@ -23,6 +23,9 @@ import json
 from django.contrib.auth.decorators import login_required
 from decorators import timeit
 
+import logging
+import sys, os
+
 
 #For Registration 
 class RegistratonView(APIView):
@@ -69,21 +72,37 @@ class SendUserOTPAPIView(generics.CreateAPIView):
   
   
     def post(self, request, *args, **kwargs):
-        account_sid = settings.TWILIO_ACOUNT_SID
-        auth_token = settings.TWILIO_AUTH_TOKEN
-        otp = random.randint(10,99999)
-        client = Client(account_sid, auth_token)
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        phone = serializer.data['phone']
-        to_send = [phone,]
-        obj = core_model.OTPVerification.objects.create(phone=phone, code=otp)
-        message = client.messages\
-        .create(
-            body='Hello Ravindra OTP is {}'.format(otp),
-            from_='+18589144399',
-            to=to_send)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        try:
+          account_sid = settings.TWILIO_ACOUNT_SID
+          auth_token = settings.TWILIO_AUTH_TOKEN
+          otp = random.randint(10,99999)
+          client = Client(account_sid, auth_token)
+          serializer = self.serializer_class(data=request.data)
+          serializer.is_valid(raise_exception=True)
+          phone = serializer.data['phone']
+          to_send = [phone,]
+          obj = core_model.OTPVerification.objects.create(phone=phone, code=otp)
+          message = client.messages\
+          .create(
+              body='Hello Ravindra OTP is {}'.format(otp),
+              from_='+18589144399',
+              to=to_send)
+          return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        except Exception as err:
+
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            msg = {
+                 "error": err,
+                 "line_no": exc_tb.tb_lineno,
+                 "file_name": fname,
+            }
+            logging.error(msg)
+            logging.warning(msg)
+            loggig.info(msg)
+        return Response({'message': 'data'})
+
 
 # OTP Verifications
 class OTPVerificationView(APIView):

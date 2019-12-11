@@ -21,12 +21,12 @@ def create_random_employee(total):
 	return '{} random users created with success!'.format(total)
 
 @shared_task
-def send_mail(total,**kwarg):
-	for i in range(total):
-		subject = 'Account Verification'
-		message = 'Frist Celery message send '
-		email_from = settings.EMAIL_HOST_USER
-		user = 'ravindra.webllisto@gmail.com'
-		recipient_list = [user,]
-		send_mail( subject, message, email_from, recipient_list )
+def send_mail():
+	emails = core_model.User.objects.filter(is_active=True).exclude(email='').values_list('email', flat=True)
+	import pdb;pdb.set_trace()
+	subject = 'Account Verification'
+	message = 'Frist Celery message send '
+	email_from = settings.EMAIL_HOST_USER
+	recipient_list = [emails,]
+	send_mail( subject, message, email_from, recipient_list )
 	return '{} random email message send'.format(total)
